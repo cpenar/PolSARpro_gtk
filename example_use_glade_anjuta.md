@@ -81,4 +81,44 @@ Pour le SpinButton nous avons besoins des bornes (0, 1600) et d'un pas de 100 :
    + Général-Use Markup
    + Général-Label : mettre directement du code Markup plutôt que le simple contenu texte.
 
+##### Création d'une fenêtre ColorMap
 
+Comme toutes les fenêtres ColorMap se ressemblent beaucoup et que seulle change la palette de couleur elle-même, nous allons créer une fenêtre qui servira de template pour toutes les fenêtres ColorMap.
+
+Dans Anjuta/Glade : Fichier-New-Fichier d'interface utilisateur.
+
+Nous sauvegarderons ce fichier dans le répertoire `ui` afin d'organiser un peu nos fichiers et nous l'appelerons `colormap_window_template.ui`
+En plus des différents Widget classiques, nous créons un widget de type `GtkBox` vide qui servira à héberger les boutons de la colormap lue et nous lui donnons un nom spécifique afin de le désigner simplement dans le code : `boxColorMapBtn`
+
+###### Préparation
+
+Dans le bouton qui correspond à `Supervized ColorMap16` de la fenêtre `single_data_set.ui` :
++ Signaux-GtkButton-Clicked : et nous définissons un gestionnaire `supColorMap16`
+
+Dans le fichier `single_data_set.py` nous définissons cette nouvelle fonction dans la classe `GUI` :
+
+```python
+def supColorMap16(self, *args):
+   mapFile = os.path.dirname(__file__) + '/ColorMap/Supervised_ColorMap16.pal'
+   windowFromFile(mapFile, self)
+```
+
+La fonction `windowFromFile` sera créée dans un fichier que nous nommerons `colorMap.py` dans le répertoire `lib`.
+
+Note: afin de pouvoir importer depuis un répertoire [il faut créer un fichier `__init__.py`](https://docs.python.org/3/tutorial/modules.html#packages) (même vide) dans ce répertoire.
+
+Dans le fichier `single_data_set.py` qui utilise cette fonction nous ajoutons donc la ligne :
+
+```Python
+from lib.colorMap import windowFromFile
+```
+ 
+###### La fonction `windowFromFile`
+
+Elle va :
++ lire un fichier palette passée en argument
++ créer un widget window à partir de `colormap_window_template.ui`
++ créer les widget `ColorButton` à partir de la palette lue
++ et enfin afficher cette nouvelle fenêtre
+
+Cf le code du fichier `colorMap.py` pour plus de détails.

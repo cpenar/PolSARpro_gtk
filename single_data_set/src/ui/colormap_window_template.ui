@@ -59,6 +59,9 @@
             <property name="halign">start</property>
             <property name="valign">end</property>
             <property name="label" translatable="yes">Output ColorMap File</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>

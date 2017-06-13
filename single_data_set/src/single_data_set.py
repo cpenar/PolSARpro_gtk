@@ -49,11 +49,6 @@ def main():
     app = GUI()
     Gtk.main()
 
-# OWN CODE
-def supColorMap16():
-    pass
-
-
 if __name__ == "__main__":
     sys.exit(main())
 
