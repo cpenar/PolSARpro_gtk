@@ -19,7 +19,7 @@ Avec Glade et Anjuta
 
 En suivant ce lien : [python3-support-in-anjuta](https://stackoverflow.com/questions/12345545/python3-support-in-anjuta)
 
-Le paquet **python3-rope** n'étant pas disponible sous ubuntu avant la version 17.10 mais est bien dans les dépots pip3,
+Le paquet **python3-rope** n'est pas disponible sous ubuntu avant la version 17.10 mais est bien dans les dépots pip3,
 dans ce cas précis il a été installé avec la commande : `sudo pip3 install rope`
 
 Suivre le tuto est effectuer les modifs dans le fichier `/usr/lib/anjuta/anjuta-python-autocomplete.py`
@@ -27,6 +27,8 @@ Suivre le tuto est effectuer les modifs dans le fichier `/usr/lib/anjuta/anjuta-
 + modifier les `print blahblah` par `print(blahblah)` (ajouter les parenthèses, requises en python3)
 
 # Info non exhaustive de création du fichier ui
+
+Après création d'un nouveau projet dans Anjuta :
 
 ### Préalables au fichier ui
 
@@ -53,13 +55,13 @@ double cliquer sur ce fichier ouvre une interface Glade à l'intérieur de Anjut
 
 ##### Widget Label
 
-+ Commun-Alignement-Horizontal : 'Start'
++ Commun-Alignement-Horizontal : 'Start' (pour une justification à gauche)
 
 ##### Widget Adjustment
 
-Ce Widget ne s'affiche pas mais servira à la configuration des bornes du SpinButon qui vient juste après
+Ce Widget ne s'affiche pas mais servira à la configuration des bornes du SpinButon qui vient juste après.
 
-Le Widjest 'Adjustment' se trouve dans la rubrique 'Miscellanous' de Glade, quand on clique dessus rien n'apparait dans l'interface mais un nouvel objet l'arborescence des objets.
+Le Widjest 'Adjustment' se trouve dans la rubrique 'Miscellanous' de Glade, quand on clique dessus rien n'apparait dans l'interface mais seulement dans l'arborescence des objets.
 On peut le configurer en le sélectionnant.
 Pour le SpinButton nous avons besoins des bornes (0, 1600) et d'un pas de 100 :
 + Valeur: 934 (valeur de départ)
@@ -71,9 +73,9 @@ Pour le SpinButton nous avons besoins des bornes (0, 1600) et d'un pas de 100 :
 
 + Général-Adjustement : Cliquer sur le crayon et sélectionner l'objet 'Adjustment' qui a été créé précédement.
 
-:mega: **Attention** Il faut créer un objet 'Adjustment' différent pour chaque SpinButton, car s'il partage le même il modifiront les même variables internes est auront des valeurs liées et identiques.
+:mega: **Attention** Il faut créer un objet 'Adjustment' différent pour chaque SpinButton, car s'ils partagent le même il modifieront les même variables internes et auront des valeurs liées et identiques.
 
-##### Widget Label
+##### Widget Label
 
 + Modifier la font en utilisant [Text Attribute Markup](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html)
    + Général-Use Markup
