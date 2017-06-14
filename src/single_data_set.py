@@ -23,7 +23,7 @@ import os, sys
 
 #Comment the first line and uncomment the second before installing
 #or making the tarball (alternatively, use project variables)
-UI_FILE = "src/single_data_set.ui"
+UI_FILE = "single_data_set.ui"
 #UI_FILE = "/usr/local/share/example_use_glade_anjuta/ui/example_use_glade_anjuta.ui"
 
 # importing lib tools
