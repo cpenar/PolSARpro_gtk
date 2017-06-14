@@ -11,27 +11,27 @@ UI_FILE = "main.ui"
 import sys
 
 class GUI:
-    def __init__(self):
-        self.builder = Gtk.Builder()
-        self.builder.add_from_file(UI_FILE)
-        self.builder.connect_signals(self)
-        window = self.builder.get_object('main_menu_window')
-        window.show_all()
-        # the state instance variable store all the datas
-        # shared between different part of the application
-        self.state = {}
+   def __init__(self):
+      self.builder = Gtk.Builder()
+      self.builder.add_from_file(UI_FILE)
+      self.builder.connect_signals(self)
+      window = self.builder.get_object('main_menu_window')
+      window.show_all()
+      # the state instance variable store all the datas
+      # shared between different part of the application
+      self.state = {}
 
-    def destroy(window, self):
-        Gtk.main_quit()
+   def destroy(window, self):
+      Gtk.main_quit()
 
-    def single_data_set_open(self, *args):
-        from single_data_set import GUI
-        GUI(self)
-        
+   def open_window(self, widget, *args):
+      ui = __import__(Gtk.Buildable.get_name(widget))
+      ui.GUI(self)
+
 def main(*args):
-    app = GUI()
-    Gtk.main()
+   app = GUI()
+   Gtk.main()
 
 if __name__ == "__main__":
-    sys.exit(main())
+   sys.exit(main())
 
