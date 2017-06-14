@@ -1,20 +1,5 @@
-# vim: set et ts=4 sw=4: #
-# -*- Mode: Python; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- #
-# color-map-file.py
-# Copyright (C) 2017 Carlos Penaranda <cpenar@MR032028>
-#
-# single_data_set is free software: you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# single_data_set is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 from gi.repository import Gtk, Gdk
 import os, math
@@ -40,7 +25,7 @@ def windowFromFile(fileName, gui):
         while colorMap[-1] == '1 0 1':
             colorMap.pop()
 
-        gui.builder.add_from_file(os.path.dirname(fileName) + '/../ui/'
+        gui.builder.add_from_file(os.path.dirname(fileName) + '/../'
             + templateFile)
 
 
