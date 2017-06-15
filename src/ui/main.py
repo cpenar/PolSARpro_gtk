@@ -8,28 +8,35 @@ from gi.repository import Gtk, GdkPixbuf, Gdk
 UI_FILE = "main.ui"
 #UI_FILE = "/usr/local/share/example_use_glade_anjuta/ui/example_use_glade_anjuta.ui"
 
-import sys
+import sys, os
 
 class GUI:
    def __init__(self):
+      # the state instance variable store all the datas
+      # shared between differents parts of the application
+      self.state = { 'config': {} }
+      self.state['config'] = {
+              'rootDir': os.path.abspath(__file__ + '/../../../'),
+              'inputDir': os.path.abspath(__file__ + '/../../../'),
+              'displaySize': { 'rows': 934, 'colums': 934 },
+              }
+      
+      # buiding GTK ui
       self.builder = Gtk.Builder()
       self.builder.add_from_file(UI_FILE)
       self.builder.connect_signals(self)
       window = self.builder.get_object('main_menu_window')
       window.show_all()
-      # the state instance variable store all the datas
-      # shared between different part of the application
-      self.state = {}
 
    def destroy(window, self):
       Gtk.main_quit()
 
    def open_window(self, widget, *args):
-      # allows to have only one signal manager for all menu item signals
-      # py files MUST have same name than menu item widget
-      # and allows them to be dynamically imported at runtime
+      # allows to have only one signal manager for all menu item signals.
+      # py files MUST have same name than menu item widget.
+      # and allows them to be dynamically imported at runtime.
       ui = __import__(Gtk.Buildable.get_name(widget))
-      ui.GUI(self)
+      ui.GUI(self.state)
 
 def main(*args):
    app = GUI()

@@ -49,8 +49,8 @@ def windowFromFile(fileName, gui):
                 btn.set_visible(True)
                 box.pack_start(btn, True, True, 0)
 
-        cm_window = gui.builder.get_object('window_color_map')
-        cm_window.set_visible(True)
+        cmWindow = gui.builder.get_object('window_color_map')
+        cmWindow.set_visible(True)
         
 
     except Exception as e:
