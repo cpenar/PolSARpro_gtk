@@ -32,9 +32,9 @@ class GUI:
       Gtk.main_quit()
 
    def open_window(self, widget, *args):
-      # allows to have only one signal manager for all menu item signals.
+      # one signal manager for all menu item signals.
       # py files MUST have same name than menu item widget.
-      # and allows them to be dynamically imported at runtime.
+      # allows them to be dynamically imported at runtime.
       ui = __import__(Gtk.Buildable.get_name(widget))
       ui.GUI(self.state)
 

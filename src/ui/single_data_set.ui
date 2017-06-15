@@ -152,7 +152,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="spinbutton1">
+                  <object class="GtkSpinButton" id="spin_button_rows">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="max_length">934</property>
@@ -162,6 +162,7 @@
                     <property name="adjustment">adjustment1</property>
                     <property name="climb_rate">10</property>
                     <property name="numeric">True</property>
+                    <signal name="value-changed" handler="value_changed_rows" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -196,13 +197,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSpinButton" id="spinbutton2">
+                  <object class="GtkSpinButton" id="spin_button_columns">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="xalign">1</property>
                     <property name="input_purpose">number</property>
                     <property name="adjustment">adjustment2</property>
                     <property name="numeric">True</property>
+                    <signal name="value-changed" handler="value_changed_columns" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

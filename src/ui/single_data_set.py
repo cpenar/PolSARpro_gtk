@@ -3,6 +3,7 @@
 
 from gi.repository import Gtk, GdkPixbuf, Gdk
 import os, sys, copy
+import pprint as pp
 
 UI_FILE = "single_data_set.ui"
 
@@ -36,4 +37,10 @@ class GUI:
     def save_and_exit(self, widget, *args):
         self.globSt['config'].update(self.config)
         self.window.destroy()
+        pp.pprint(self.globSt)
 
+    def value_changed_rows(self, widget, *args):
+        self.config['displaySize']['rows'] = widget.get_value()
+
+    def value_changed_columns(self, widget, *args):
+        self.config['displaySize']['columns'] = widget.get_value()
