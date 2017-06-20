@@ -14,12 +14,14 @@ class GUI:
    def __init__(self):
       # the state instance variable store all the datas
       # shared between differents parts of the application
-      self.state = { 'config': {} }
-      self.state['config'] = {
-              'rootDir': os.path.abspath(__file__ + '/../../../'),
-              'inputDir': os.path.abspath(__file__ + '/../../../'),
-              'displaySize': { 'rows': 934, 'colums': 934 },
-              }
+      self.state = { 'config': {
+          'rootDir': os.path.abspath(__file__ + '/../../../'),
+          'inputDir': os.path.abspath(__file__ + '/../../../'),
+          'displaySize': { 'rows': 934, 'colums': 934 },
+          } 
+      }
+              
+      print(self.state)
       
       # buiding GTK ui
       self.builder = Gtk.Builder()
