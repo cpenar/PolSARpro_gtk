@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/cpenar/PolSARpro_gtk.svg?branch=master)](https://travis-ci.org/cpenar/PolSARpro_gtk)
+[![Build Status](https://travis-ci.org/cpenar/PolSARpro_gtk.svg?branch=travis_test)](https://travis-ci.org/cpenar/PolSARpro_gtk)
 
 Temporary repo of the python3 rewriting of PolSARpro.
 
