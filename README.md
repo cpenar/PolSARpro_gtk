@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cpenar/PolSARpro_gtk.svg?branch=master)](https://travis-ci.org/cpenar/PolSARpro_gtk)
+
 Temporary repo of the python3 rewriting of PolSARpro.
 
 This repo is for proof of concept and test of Glade, GTK3.
