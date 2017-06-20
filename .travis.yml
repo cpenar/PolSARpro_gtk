@@ -1,4 +1,4 @@
-udo: required
+sudo: required
 services: docker
 language: generic
 env:
