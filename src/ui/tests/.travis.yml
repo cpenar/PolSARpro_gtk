@@ -9,7 +9,7 @@ env:
 
 before_install:
   # Create a docker image called "myimage"
-  - docker build -t myimage -f "$DOCKER_FILE" .
+  - docker build -t myimage -f "src/ui/tests/$DOCKER_FILE" .
 
 before_script:
   # create a docker container from the image, mount the current working
