@@ -20,9 +20,7 @@ class GUI:
           'displaySize': { 'rows': 934, 'colums': 934 },
           } 
       }
-              
-      print(self.state)
-      
+
       # buiding GTK ui
       self.builder = Gtk.Builder()
       self.builder.add_from_file(UI_FILE)
