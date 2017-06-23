@@ -7,3 +7,9 @@
 + Glade: `pacman -S mingw-w64-x86_64-glade`
 + Python bindings: `pacman -S mingw-w64-x86_64-python3-gobject`
 + Git: `pacman -S git`
+
+# Clone the git repo
+
++ Open a MSYS2 shell
++ cd in the directory you want to clone the git repo
++ run: `git clone https://github.com/cpenar/PolSARpro_gtk`
