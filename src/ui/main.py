@@ -8,20 +8,33 @@ from gi.repository import Gtk
 UI_FILE = "main.ui"
 
 import sys
-import os
+from os.path import abspath
 
 
 class GUI:
     def __init__(self):
         # the state instance variable store all the datas
         # shared between differents parts of the application
+        uiDir = abspath(__file__ + '/../')
+        rootDir = abspath(uiDir + '/../../')
+
         self.state = {'config': {
-            'rootDir': os.path.abspath(__file__ + '/../../../'),
-            'inputDir': os.path.abspath(__file__ + '/../../../'),
-            'colorMapDir':  os.path.abspath(__file__ + '/../') + '/ColorMap/',
-            'displaySize': {'rows': 934, 'columns': 934},
-            }
-        }
+            'localDir': uiDir,
+            'rootDir': rootDir,
+            'data_set_choosen': '',
+            'single_data_set': {
+                'rootDir': rootDir,
+                'inputDir': rootDir,
+                'colorMapDir': abspath(uiDir + '/ColorMap/'),
+                'displaySize': {'rows': 934, 'columns': 934},
+                },
+            'dual_data_sets': {
+                'inputMasterDir': rootDir,
+                'inputSlaveDir': rootDir,
+                'colorMapDir': abspath(uiDir + '/ColorMap/'),
+                'displaySize': {'rows': 934, 'columns': 934},
+                }
+        }}
 
         # buiding GTK ui
         self.builder = Gtk.Builder()

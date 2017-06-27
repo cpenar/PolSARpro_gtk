@@ -25,10 +25,6 @@ class GUI:
         self.window = self.builder.get_object(__name__ + '_dialog')
         self.window.show_all()
 
-        self.fileChooser = self.builder.get_object('input_dir_file_chooser')
-        inputDir = self.config[__name__]['inputDir']
-        self.fileChooser.set_current_folder(inputDir)
-
         self.rows = self.config[__name__]['displaySize']['rows']
         self.columns = self.config[__name__]['displaySize']['columns']
 
@@ -37,6 +33,14 @@ class GUI:
 
         self.spinButtonColumns = self.builder.get_object('spin_button_columns')
         self.spinButtonColumns.set_value(self.columns)
+
+        self.masterFileChooser = self.builder.get_object('input_master_dir_file_chooser')
+        inputMasterDir = self.config[__name__]['inputMasterDir']
+        self.masterFileChooser.set_current_folder(inputMasterDir)
+
+        self.slaveFileChooser = self.builder.get_object('input_slave_dir_file_chooser')
+        inputSlaveDir = self.config[__name__]['inputSlaveDir']
+        self.slaveFileChooser.set_current_folder(inputSlaveDir)
 
     def selection_changed(self, widget, *args):
         self.config[__name__]['inputDir'] = widget.get_filename()
