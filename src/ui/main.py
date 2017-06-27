@@ -28,6 +28,7 @@ class GUI:
         self.builder.add_from_file(UI_FILE)
         self.builder.connect_signals(self)
         window = self.builder.get_object('main_menu_window')
+        window.move(0, 0)
         window.show_all()
 
     def destroy(window, self):
