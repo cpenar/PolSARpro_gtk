@@ -10,7 +10,9 @@
   <object class="GtkDialog" id="dialog_color_map">
     <property name="can_focus">False</property>
     <property name="modal">True</property>
+    <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
+    <property name="gravity">center</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
         <property name="can_focus">False</property>
