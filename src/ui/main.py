@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+PolSARpro GTK3 / PyGi UI start file
+"""
+
 from gi.repository import Gtk
 
 #Comment the first line and uncomment the second before installing
@@ -12,7 +16,13 @@ from os.path import abspath
 
 
 class GUI:
+    """
+    The main window containing the menu
+    """
     def __init__(self):
+        """
+        Init the store, later should read config from a file
+        """
         # the state instance variable store all the datas
         # shared between differents parts of the application
         uiDir = abspath(__file__ + '/../')
@@ -48,9 +58,12 @@ class GUI:
         Gtk.main_quit()
 
     def open_window_from_widget_name(self, widget, *args):
-        # one signal manager for all menu item signals.
-        # py files MUST have same name than menu item widget.
-        # allows them to be dynamically imported at runtime.
+        """
+        Signal manager for opening the window from the menu items.
+        The py file of the window MUST have the same name than
+        the menu item widget.
+        The py and ui files are dunamically imported at runtime
+        """
         ui = __import__(Gtk.Buildable.get_name(widget))
         ui.GUI(self.state)
 
