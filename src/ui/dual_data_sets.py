@@ -34,11 +34,13 @@ class GUI:
         self.spinButtonColumns = self.builder.get_object('spin_button_columns')
         self.spinButtonColumns.set_value(self.columns)
 
-        self.masterFileChooser = self.builder.get_object('input_master_dir_file_chooser')
+        self.masterFileChooser = self.builder.get_object(
+            'input_master_dir_file_chooser')
         inputMasterDir = self.config[__name__]['inputMasterDir']
         self.masterFileChooser.set_current_folder(inputMasterDir)
 
-        self.slaveFileChooser = self.builder.get_object('input_slave_dir_file_chooser')
+        self.slaveFileChooser = self.builder.get_object(
+            'input_slave_dir_file_chooser')
         inputSlaveDir = self.config[__name__]['inputSlaveDir']
         self.slaveFileChooser.set_current_folder(inputSlaveDir)
 
