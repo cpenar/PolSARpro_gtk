@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 #Comment the first line and uncomment the second before installing
 #or making the tarball (alternatively, use project variables)
 UI_FILE = "main.ui"
 
 import sys
+import os
 from os.path import abspath
+
+from pprint import pprint as pretty
 
 
 class GUI:
@@ -18,9 +21,21 @@ class GUI:
         uiDir = abspath(__file__ + '/../')
         rootDir = abspath(uiDir + '/../../')
 
+        # env variable pointing to the root of a PolSARpro compiled version
+        try:
+            compiled_psp_path = os.environ["COMPILED_PSP_PATH"]
+        except KeyError:
+            print("ERROR: missing environment variable COMPILED_PSP_PATH.\n"
+                  + "Necessary for Dev phase.\n"
+                  + "Set COMPILED_PSP_PATH and relaunch the app, example :\n\n"
+                  + "export COMPILED_PSP_PATH=/some/path/to/bleh")
+            sys.exit(1)
+
         self.state = {'config': {
+            'compiled_psp_path': compiled_psp_path,
             'localDir': uiDir,
             'rootDir': rootDir,
+            'tempDir': '/tmp/PolSARpro',
             'data_set_choosen': '',
             'single_data_set': {
                 'rootDir': rootDir,
@@ -36,13 +51,36 @@ class GUI:
                 }
         }}
 
-        # buiding GTK ui
+        # buiding GTK ui and positiong main window
         self.builder = Gtk.Builder()
         self.builder.add_from_file(UI_FILE)
         self.builder.connect_signals(self)
         window = self.builder.get_object('main_menu_window')
         window.move(0, 0)
         window.show_all()
+
+        # status window: resizing and positing
+        status_window = self.builder.get_object('status_window')
+
+        screen_height = Gdk.Screen.height()
+        status_window_heigth = status_window.get_allocated_height()
+        status_window.move(0, screen_height - status_window_heigth)
+        status_window.set_size_request(Gdk.Screen.width(), 0)
+
+        # test adding stuff in buffer
+
+        self.add_to_status_view('Initialisation')
+
+    def add_to_status_view(self, text):
+        status_view = self.builder.get_object('main_status_bar')
+        status_buffer = status_view.get_buffer()
+
+        status_buffer.set_text(
+            status_buffer.get_text(
+                status_buffer.get_start_iter(),
+                status_buffer.get_end_iter(),
+                False)
+            + "\n" + text)
 
     def destroy(window, self):
         Gtk.main_quit()
@@ -53,6 +91,9 @@ class GUI:
         # allows them to be dynamically imported at runtime.
         ui = __import__(Gtk.Buildable.get_name(widget))
         ui.GUI(self.state)
+        print('State when opening ' + Gtk.Buildable.get_name(widget))
+        pretty(self.state)
+        print('\n\n')
 
 
 def main(*args):
