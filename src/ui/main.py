@@ -11,7 +11,7 @@ import sys
 import os
 from os.path import abspath
 
-#from pprint import pprint as pretty
+from pprint import pprint as pretty
 
 
 class GUI:
@@ -39,25 +39,27 @@ class GUI:
                   + "export COMPILED_PSP_PATH=/some/path/to/bleh")
             sys.exit(1)
 
-        self.state = {'config': {
-            'compiled_psp_path': compiled_psp_path,
-            'localDir': uiDir,
-            'rootDir': rootDir,
-            'tempDir': win_prefix + '/tmp/PolSARpro',
-            'data_set_choosen': '',
-            'single_data_set': {
+        self.state = {
+            'config': {
+                'compiled_psp_path': compiled_psp_path,
+                'localDir': uiDir,
                 'rootDir': rootDir,
-                'inputDir': rootDir,
-                'colorMapDir': abspath(uiDir + '/ColorMap/'),
-                'displaySize': {'rows': 934, 'columns': 934},
-                },
-            'dual_data_sets': {
-                'inputMasterDir': rootDir,
-                'inputSlaveDir': rootDir,
-                'colorMapDir': abspath(uiDir + '/ColorMap/'),
-                'displaySize': {'rows': 934, 'columns': 934},
-                }
-        }}
+                'tempDir': win_prefix + '/tmp/PolSARpro',
+                'data_set_choosen': '',
+                'single_data_set': {
+                    'rootDir': rootDir,
+                    'inputDir': rootDir,
+                    'colorMapDir': abspath(uiDir + '/ColorMap/'),
+                    'displaySize': {'rows': 934, 'columns': 934},
+                    },
+                'dual_data_sets': {
+                    'inputMasterDir': rootDir,
+                    'inputSlaveDir': rootDir,
+                    'colorMapDir': abspath(uiDir + '/ColorMap/'),
+                    'displaySize': {'rows': 934, 'columns': 934},
+                    }
+            }
+        }
 
         # buiding GTK ui and positiong main window
         self.builder = Gtk.Builder()
@@ -66,6 +68,9 @@ class GUI:
         window = self.builder.get_object('main_menu_window')
         window.move(0, 0)
         window.show_all()
+
+        # Storing the builder to pass to children
+        self.state['GtkBuilder'] = self.builder
 
         # status window: resizing and positing
         status_window = self.builder.get_object('status_window')
@@ -109,6 +114,11 @@ class GUI:
         # one signal manager for all menu item signals.
         # py files MUST have same name than menu item widget.
         # allows them to be dynamically imported at runtime.
+
+        # debug purpose
+        print('\nState when entering ' + Gtk.Buildable.get_name(widget))
+        pretty(self.state)
+
         ui = __import__(Gtk.Buildable.get_name(widget))
         ui.GUI(self.state)
 

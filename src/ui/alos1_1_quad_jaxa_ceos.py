@@ -6,6 +6,9 @@ import os
 
 from gi.repository import Gtk
 
+from time import strftime
+from lib.tools import exec_bin
+
 UI_FILE = __name__ + ".ui"
 
 
@@ -41,7 +44,7 @@ class GUI:
             self.config['single_data_set']['inputDir'])
 
     def cancel_window(self, widget, *args):
-        self.window.set_visible(False)
+        self.window.destroy()
 
     def output_selection_changed(self, widget, *args):
         self.config['ALOSDirOutput'] = widget.get_filename()
@@ -116,21 +119,19 @@ class GUI:
         self.builder.get_object('validate_button').set_sensitive(True)
 
     def read_headers(self, widget, *args):
-        from time import strftime
-        from lib.tools import exec_bin
 
         exe_file = self.config['compiled_psp_path'] \
             + '/Soft/bin/data_import/alos_header.exe'
 
-        alos_output_file = self.config['tempDir'] + '/' \
+        self.config['ALOSConfigFile'] = self.config['tempDir'] + '/' \
             + strftime("%Y_%m_%d_%H_%M_%S") + '_alos_config.txt'
 
         exe_args = [
-            ('-od', self.config['ALOSDirOutput']),
-            ('-ilf', self.config['sar_lead_file']),
-            ('-iif', self.config['IMG-HH']),
-            ('-itf', self.config['sar_trailer_file_entry']),
-            ('-ocf', alos_output_file)
+            '-od', self.config['ALOSDirOutput'],
+            '-ilf', self.config['sar_lead_file'],
+            '-iif', self.config['IMG-HH'],
+            '-itf', self.config['sar_trailer_file_entry'],
+            '-ocf', self.config['ALOSConfigFile'],
         ]
 
         (_, return_code) = exec_bin(exe_file, exe_args)
@@ -139,10 +140,10 @@ class GUI:
             raise Exception('Wrong return code')
 
         # else we can continue and read the output file
-        with open(alos_output_file, 'r') as output:
+        with open(self.config['ALOSConfigFile'], 'r') as output:
             lines = output.read().splitlines()
-            self.config['initial_rows_entry'] = lines[1]
-            self.config['initial_cols_entry'] = lines[4]
+            self.config['initial_rows_number'] = lines[1]
+            self.config['initial_cols_number'] = lines[4]
 
         # remove the temp file
         # dont remove for test time
@@ -150,10 +151,10 @@ class GUI:
 
         # update the entries
         self.builder.get_object('initial_rows_entry').set_text(
-            self.config['initial_rows_entry'])
+            self.config['initial_rows_number'])
 
         self.builder.get_object('initial_cols_entry').set_text(
-            self.config['initial_cols_entry'])
+            self.config['initial_cols_number'])
 
         self.builder.get_object('headers_infos_box').set_sensitive(True)
 
