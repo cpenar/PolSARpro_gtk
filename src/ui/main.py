@@ -11,7 +11,7 @@ import sys
 import os
 from os.path import abspath
 
-from pprint import pprint as pretty
+#from pprint import pprint as pretty
 
 
 class GUI:
@@ -20,6 +20,14 @@ class GUI:
         # shared between differents parts of the application
         uiDir = abspath(__file__ + '/../')
         rootDir = abspath(uiDir + '/../../')
+
+        # are we in windows msys2 environment ?
+        win_prefix = ""
+        try:
+            if os.environ['OS'].startswith('Windows'):
+                win_prefix = "C:/msys64"
+        except:
+            pass
 
         # env variable pointing to the root of a PolSARpro compiled version
         try:
@@ -35,7 +43,7 @@ class GUI:
             'compiled_psp_path': compiled_psp_path,
             'localDir': uiDir,
             'rootDir': rootDir,
-            'tempDir': '/tmp/PolSARpro',
+            'tempDir': win_prefix + '/tmp/PolSARpro',
             'data_set_choosen': '',
             'single_data_set': {
                 'rootDir': rootDir,
@@ -67,9 +75,21 @@ class GUI:
         status_window.move(0, screen_height - status_window_heigth)
         status_window.set_size_request(Gdk.Screen.width(), 0)
 
-        # test adding stuff in buffer
+        # Initialising tempDir
+        self.initTempDIr()
+
+        # TEST: adding stuff in buffer
 
         self.add_to_status_view('Initialisation')
+
+    def initTempDIr(self):
+        tempDir = self.state['config']['tempDir']
+
+        if not os.path.exists(tempDir):
+            os.makedirs(tempDir)
+
+        if not os.access(tempDir, os.W_OK) or not os.path.isdir(tempDir):
+            raise OSError(tempDir + ' should be a writeable directory')
 
     def add_to_status_view(self, text):
         status_view = self.builder.get_object('main_status_bar')
@@ -91,9 +111,6 @@ class GUI:
         # allows them to be dynamically imported at runtime.
         ui = __import__(Gtk.Buildable.get_name(widget))
         ui.GUI(self.state)
-        print('State when opening ' + Gtk.Buildable.get_name(widget))
-        pretty(self.state)
-        print('\n\n')
 
 
 def main(*args):

@@ -20,11 +20,11 @@ class GUI:
 
         # Gtk.Entry input_file_entry texte
         self.inputEntry = self.builder.get_object('input_file_entry')
-        self.inputEntry.set_text(fileName.split('/')[-1])
+        self.inputEntry.set_text(os.path.basename(fileName))
 
         # Output
         self.outputEntry = self.builder.get_object('output_file_entry')
-        self.outputEntry.set_text(fileName.split('/')[-1])
+        self.outputEntry.set_text(os.path.basename(fileName))
 
         self.fcDialog = self.builder.get_object('output_filechooserdialog')
 
@@ -44,7 +44,7 @@ class GUI:
         return True
 
     def save_file_chooser(self, widget, *args):
-        fileName = self.fcDialog.get_uri().split('/')[-1]
+        fileName = os.path.basename(self.fcDialog.get_uri())
         self.outputEntry.set_text(fileName)
         self.fcDialog.set_visible(False)
 

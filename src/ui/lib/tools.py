@@ -4,7 +4,7 @@
 
 def exec_bin(exe_file, exe_args, async=False, callback=None):
     """
-    Can launch an exucutable file with args.
+    Can launch an executable file with args.
     Can be async, then should specify a callback (and a progress bar ?)
     """
 
@@ -20,7 +20,9 @@ def exec_bin(exe_file, exe_args, async=False, callback=None):
 
     cmd_line = exe_file
     for args_duo in exe_args:
-        cmd_line += " " + " ".join(args_duo)
+        cmd_line += " " + args_duo[0] + " " + "'" + args_duo[1] + "'"
+
+    print('\nExecuting :\n' + cmd_line)
 
     if async:
         # TODO: to be written

@@ -51,21 +51,21 @@ class GUI:
         if widget.get_filename() is None:
             return True
 
+        basename = os.path.basename(widget.get_filename())
+
         check_button = self.builder.get_object('check_lead_file_button')
 
-        if self.is_leader_file(widget.get_filename()):
-            just_the_name = widget.get_filename().split('/')[-1]
-            self.name_files_motif = just_the_name[4:]
+        if self.is_leader_file(basename):
+            self.name_files_motif = basename[4:]
             self.config['sar_lead_file'] = widget.get_filename()
             check_button.set_sensitive(True)
         else:
             print('Not a leader file : ' + widget.get_filename())
             widget.unselect_filename(widget.get_filename())
 
-    def is_leader_file(self, path_to_file):
+    def is_leader_file(self, filename):
         # TODO: more checks ?
-        just_the_name = path_to_file.split('/')[-1]
-        return just_the_name.startswith('LED-')
+        return filename.startswith('LED-')
 
     def check_leader_file(self, widget, *args):
         # TODO: get the infos and populate the entries
@@ -134,7 +134,7 @@ class GUI:
         ]
 
         (_, return_code) = exec_bin(exe_file, exe_args)
-        if return_code in(exe_file, exe_args) is not 1:
+        if return_code is not 1:
             # return should be 1 ?
             raise Exception('Wrong return code')
 
@@ -145,7 +145,8 @@ class GUI:
             self.config['initial_cols_entry'] = lines[4]
 
         # remove the temp file
-        os.remove(alos_output_file)
+        # dont remove for test time
+        # os.remove(alos_output_file)
 
         # update the entries
         self.builder.get_object('initial_rows_entry').set_text(
