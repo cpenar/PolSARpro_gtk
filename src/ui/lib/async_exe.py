@@ -8,12 +8,13 @@ from time import sleep
 
 
 class Async_exec:
-    def __init__(self, exe_file, exe_args, callback):
+    def __init__(self, exe_file, exe_args, callback, builder):
         """
         Callback signature :
             The new created process as argument
         """
 
+        self.builder = builder
         self.process_queue = []
         self.add(exe_file, exe_args, callback)
 
@@ -25,6 +26,7 @@ class Async_exec:
         # manage the process queue in a non blocking subthread
 
         def run_processes():
+            self.builder.get_object('menubar1').set_sensitive(False)
             for p in self.process_queue:
                 exe_file, exe_args, callback = p
 
@@ -49,6 +51,10 @@ class Async_exec:
                 self.process.wait()
                 sleep(0.2)
                 print('FINISHED : ' + exe_file)
+
+            self.builder.get_object('menubar1').set_sensitive(True)
+
+
 
         thread = Thread(target=run_processes)
         thread.daemon = True

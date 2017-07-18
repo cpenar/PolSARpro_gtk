@@ -96,6 +96,15 @@
                         <signal name="activate" handler="open_window_from_widget_name" swapped="no"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkMenuItem" id="titi">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Fais des trucs super</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="open_window_from_widget_name" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

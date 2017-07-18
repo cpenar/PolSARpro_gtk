@@ -61,6 +61,7 @@ class GUI:
     def on_symmetrization_button_toggled(self, widget, *args):
         if widget.get_active():
             self.config['symmetrisation'] = '1'
+            print('sym activé')
         else:
             self.config['symmetrisation'] = '0'
 
@@ -77,7 +78,11 @@ class GUI:
         self.builder.get_object('sub_sampling_col_entry')\
             .set_text('?')
 
+
         self.builder.get_object('T3_button').set_sensitive(True)
+
+        t3_button = self.builder.get_object('T3_button')
+        t3_button.do_clicked(t3_button)
 
         sym_button = self.builder.get_object('symmetrization_button')
 
@@ -143,7 +148,8 @@ class GUI:
         async_proc_chain = Async_exec(
             process_file,
             process_args,
-            self.process_output_to_progress_bar)
+            self.process_output_to_progress_bar,
+            self.builder)
 
         # Stacking create_mask_valid_pixels.exe
 
