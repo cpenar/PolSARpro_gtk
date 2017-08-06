@@ -15,11 +15,16 @@ class Async_exec:
         """
 
         self.process_queue = []
+        self._end = None
         self.add(exe_file, exe_args, callback)
 
     def add(self, exe_file, exe_args, callback):
         print('process stacking: ' + exe_file)
         self.process_queue.append([exe_file, exe_args, callback])
+
+    def end(self, callback):
+       # post processes treatment
+       _end = callback
 
     def run(self):
         # manage the process queue in a non blocking subthread
@@ -49,6 +54,9 @@ class Async_exec:
                 self.process.wait()
                 sleep(0.2)
                 print('FINISHED : ' + exe_file)
+            # post processes treatment
+            if self._end:
+               self._end()
 
         thread = Thread(target=run_processes)
         thread.daemon = True
