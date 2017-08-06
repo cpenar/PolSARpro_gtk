@@ -175,7 +175,7 @@ class GUI:
         process_args = [
             '-bf', self.config['extractOutputDir'] + '/mask_valid_pixels.bin',
             '-mf', self.config['extractOutputDir'] + '/mask_valid_pixels.bin',
-            '-iodf', "4",
+            '-iodf', '4',
             '-fnr', str(final_row_number),
             '-fnc', str(final_col_number),
         ]
@@ -230,12 +230,14 @@ class GUI:
 
         # Stacking create_pauli_rgb_file.exe
 
+        self.config['output_bmp_file'] = self.config['extractOutputDir'] + '/PauliRGB.bmp'
+
         process_file = self.config['compiled_psp_path'] \
             + '/Soft/bin/bmp_process/create_pauli_rgb_file.exe'
 
         process_args = [
             '-id', self.config['extractOutputDir'],
-            '-of', self.config['extractOutputDir'] + '/PauliRGB.bmp',
+            '-of', self.config['output_bmp_file'],
             '-iodf', 'T3',
             '-ofr', str(self.config['offset_row']),
             '-ofc', str(self.config['offset_col']),
@@ -250,8 +252,14 @@ class GUI:
         async_proc_chain.add(process_file, process_args,
                              self.process_output_to_progress_bar)
 
+        # post exec
+        async_proc_chain.end(self.open_output_bmp_file)
+
         # Fire the async process chain execution
         async_proc_chain.run()
+
+        # Hide this window
+        self.window.destroy()
 
     def process_output_to_progress_bar(self, process):
         from time import sleep
@@ -284,3 +292,8 @@ class GUI:
             sleep(0.1)
 
         GLib.idle_add(max_progress_bar)
+
+    def open_output_bmp_file(self):
+        import image_process
+        GLib.idle_add(image_process.GUI(self.globState, self.config['output_bmp_file']))
+
