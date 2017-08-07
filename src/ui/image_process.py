@@ -25,5 +25,5 @@ class GUI:
 
         if image_file_path:
            self.image = self.builder.get_object('image')
-           self.image.set_from_file(image_file_path)
+           self.image.set_from_file(image_file_path[0])
         

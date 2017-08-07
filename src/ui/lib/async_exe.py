@@ -24,7 +24,7 @@ class Async_exec:
 
     def end(self, callback):
        # post processes treatment
-       _end = callback
+       self._end = callback
 
     def run(self):
         # manage the process queue in a non blocking subthread
@@ -55,7 +55,7 @@ class Async_exec:
                 sleep(0.2)
                 print('FINISHED : ' + exe_file)
             # post processes treatment
-            if self._end:
+            if not self._end is None:
                self._end()
 
         thread = Thread(target=run_processes)

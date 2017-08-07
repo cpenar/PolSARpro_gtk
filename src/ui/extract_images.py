@@ -294,6 +294,10 @@ class GUI:
         GLib.idle_add(max_progress_bar)
 
     def open_output_bmp_file(self):
-        import image_process
-        GLib.idle_add(image_process.GUI(self.globState, self.config['output_bmp_file']))
+        def open_image_process_gui():
+            import image_process
+            image_process.GUI(self.globState, self.config['output_bmp_file'])
+            return False
+
+        GLib.idle_add(open_image_process_gui)
 
