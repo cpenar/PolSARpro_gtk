@@ -1,5 +1,6 @@
 Temporary repo of the python3 rewriting of PolSARpro.
 
-This repo is for proof of concept and test of Anjuta, Glade, GTK3.
+See other branches for differents tests and POC.
 
-See an [example of use](https://github.com/cpenar/PolSARpro_gtk/blob/master/example_use_glade_anjuta.md)
++ [anjuta](https://github.com/cpenar/PolSARpro_gtk/tree/anjuta) : testing Anjuta/Glade/GTK3/PyGObject
++ [dev](https://github.com/cpenar/PolSARpro_gtk/tree/dev) : Glade/GTK3/PyGObject
