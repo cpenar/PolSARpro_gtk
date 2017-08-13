@@ -57,12 +57,13 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkToolButton" id="toolbutton4">
+                      <object class="GtkToolButton" id="rect_selection_button">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Multi Rectangle selection</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">document-page-setup</property>
+                        <signal name="clicked" handler="on_rect_selection_button_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -93,8 +94,8 @@
                 <property name="hexpand">False</property>
                 <property name="vexpand">False</property>
                 <property name="shadow_type">in</property>
-                <property name="min_content_width">400</property>
-                <property name="min_content_height">300</property>
+                <property name="min_content_width">0</property>
+                <property name="min_content_height">0</property>
                 <child>
                   <object class="GtkViewport" id="viewport1">
                     <property name="visible">True</property>
