@@ -6,17 +6,18 @@ import os
 
 from gi.repository import Gtk, Gdk
 
-from scipy import misc
+#from scipy import misc
 
 import matplotlib.pyplot as plt
 
 from PIL.Image import open as pilload
 
-from matplotlib.image import imread as pltimread
+#from matplotlib.image import imread as pltimread
 
 #from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as GtkFigureCanvas
+from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as MplNavBar
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as GtkFigureCanvas
-from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as NavigationToolbar
+#from matplotlib.backends.backend_gtk3agg import NavigationToolbar2GTK3Agg as MplNavBar
 
 #from lib.convimage import ConvImage as CIm
 
@@ -54,7 +55,7 @@ class GUI:
         self.image = pilload(self.image_file_path)
         
         max_width = Gdk.Screen.width() / 2 - 100
-        max_height = Gdk.Screen.height() / 2 - 100
+        max_height = Gdk.Screen.height() - 250
 
         #self.window.set_size_request(max_width, max_height)
 
@@ -75,7 +76,17 @@ class GUI:
         else:
             self.window.resize(width, height)
             
+
+        # MplNavBar
+
+        toolbar = MplNavBar(canvas, self.window)
+        box = self.builder.get_object('box1')
+        box.pack_start(toolbar, False, True, 0)
+
+        # window
+        
         self.window.show_all()
+        self.window.move(max_width + 200, 130)
 
     def on_rect_selection_button_clicked(self, widget, *args):
         pass
