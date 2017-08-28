@@ -10,21 +10,21 @@ from gi.repository import Gtk, Gdk
 
 import matplotlib.pyplot as plt
 
-from PIL.Image import open as pilload
+#from PIL.Image import open as pilload
 
-#from matplotlib.image import imread as pltimread
+from matplotlib.image import imread as mplimread
 
 #from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as GtkFigureCanvas
 from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as MplNavBar
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as GtkFigureCanvas
 #from matplotlib.backends.backend_gtk3agg import NavigationToolbar2GTK3Agg as MplNavBar
 
-#from lib.convimage import ConvImage as CIm
+from matplotlib.patches import Polygon
 
 UI_FILE = __name__ + ".ui"
 
-#default_image_path = 'Images/PSPyoda.gif'
-default_image_path = '/home/nemosyne/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/PauliRGB.bmp'
+default_image_path = 'Images/PSPyoda.gif'
+#default_image_path = '/home/nemosyne/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/PauliRGB.bmp'
 
 
 class GUI:
@@ -52,7 +52,7 @@ class GUI:
                 default_image_path
                 #self.config['localDir'] + '/' + default_image_path
 
-        self.image = pilload(self.image_file_path)
+        self.image = mplimread(self.image_file_path)
         
         max_width = Gdk.Screen.width() / 2 - 100
         max_height = Gdk.Screen.height() - 250
@@ -62,10 +62,16 @@ class GUI:
         # Setting Gtk image
         
         self.GtkSw = self.builder.get_object('scrolledwindow_image')
-        width, height = self.image.size
+        width, height, _ = self.image.shape
     
         fig, ax = plt.subplots()
         ax.imshow(self.image, origin='upper')
+        #ax.get_xaxis().set_visible(False)
+        #ax.get_yaxis().set_visible(False)
+        #ax.set_axis_off()
+        #ax.set_frame_on(False)
+        #ax.set_xticks([]); ax.set_yticks([])
+        #plt.axis('off')
 
         canvas = GtkFigureCanvas(fig)
         self.GtkSw.add_with_viewport(canvas)
@@ -87,6 +93,17 @@ class GUI:
         
         self.window.show_all()
         self.window.move(max_width + 200, 130)
+
+        # testing polygon
+
+        absices = np.random.random_integers(width, size=(5,))
+        ordonnees = np.random.random_integers(height, size=(5,))
+        points = np.stack((absices, ordonnees), axis=-1)
+
+        Polygon(points)
+
+        
+        
 
     def on_rect_selection_button_clicked(self, widget, *args):
         pass
