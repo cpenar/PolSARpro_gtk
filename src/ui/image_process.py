@@ -4,22 +4,26 @@
 import copy
 import os
 
+import gi
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 
 #from scipy import misc
 
+import matplotlib
+matplotlib.use('GTK3Agg')
 import matplotlib.pyplot as plt
 
-#from PIL.Image import open as pilload
+#from PIL.Image import open as imload
+from matplotlib.image import imread as imload
 
-from matplotlib.image import imread as mplimread
-
-#from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as GtkFigureCanvas
+from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as GtkFigureCanvas
+#from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as GtkFigureCanvas
 from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as MplNavBar
-from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as GtkFigureCanvas
-#from matplotlib.backends.backend_gtk3agg import NavigationToolbar2GTK3Agg as MplNavBar
+#from matplotlib.backends.backend_gtk3agg import NavigationToolbar2GTK3agg as MplNavBar
 
 from matplotlib.patches import Polygon
+
 
 UI_FILE = __name__ + ".ui"
 
@@ -52,7 +56,7 @@ class GUI:
                 default_image_path
                 #self.config['localDir'] + '/' + default_image_path
 
-        self.image = mplimread(self.image_file_path)
+        self.image = imload(self.image_file_path)
         
         max_width = Gdk.Screen.width() / 2 - 100
         max_height = Gdk.Screen.height() - 250
@@ -65,7 +69,7 @@ class GUI:
         width, height, _ = self.image.shape
     
         fig, ax = plt.subplots()
-        ax.imshow(self.image, origin='upper')
+        ax.imshow(self.image, origin='lower')
         #ax.get_xaxis().set_visible(False)
         #ax.get_yaxis().set_visible(False)
         #ax.set_axis_off()
