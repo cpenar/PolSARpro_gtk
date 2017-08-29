@@ -49,6 +49,9 @@ class GUI:
         self.image_file_path = image_file_path
         self.init_image()
 
+        self.polycollection = []
+        self.currentpoly = []
+
     def init_image(self):
 
         imBox = self.builder.get_object('dialog-vbox1')
@@ -71,12 +74,12 @@ class GUI:
 
         params = mpl.figure.SubplotParams(left=0, bottom=0, right=1, top=1, wspace=0.1, hspace=0.1)
     
-        fig, ax = plt.subplots(subplotpars=params)
+        self.fig, self.ax = plt.subplots(subplotpars=params)
 
-        ax.set_axis_off()
+        self.ax.set_axis_off()
         #ax.xaxis.set_visible(False)
         #ax.yaxis.set_visible(False)
-        ax.imshow(self.image, origin='lower')
+        self.ax.imshow(self.image)
 
         # Trying to add a polygon with alpha
 
@@ -88,10 +91,10 @@ class GUI:
 
         polygon = Polygon(polycoords, True, alpha=0.4)
 
-        ax.add_patch(polygon)
+        self.ax.add_patch(polygon)
 
-        canvas = GtkFigureCanvas(fig)
-        self.GtkSw.add_with_viewport(canvas)
+        self.canvas = GtkFigureCanvas(self.fig)
+        self.GtkSw.add_with_viewport(self.canvas)
 
         if width > max_width or height > max_height:
             # resize to max allowed size
@@ -102,7 +105,7 @@ class GUI:
 
         # MplNavBar
 
-        toolbar = MplNavBar(canvas, self.window)
+        toolbar = MplNavBar(self.canvas, self.window)
         box = self.builder.get_object('box1')
         box.pack_start(toolbar, False, True, 0)
 
@@ -111,12 +114,41 @@ class GUI:
         self.window.show_all()
         self.window.move(max_width + 200, 130)
 
+        # removing polygon after a timeout
         from gi.repository import GLib
         def del_poly():
             polygon.remove()
+            self.canvas.draw()
 
         GLib.timeout_add(1000, del_poly)
 
 
-    def on_rect_selection_button_clicked(self, widget, *args):
-        pass
+    def on_polygon_selection_button_clicked(self, widget, *args):
+        self.cid = self.fig.canvas.mpl_connect(
+            'button_press_event', 
+            self.next_poly_coord)
+
+    def next_poly_coord(self, event):
+        if event.button!=1: return
+        if (event.xdata is None): return
+
+        print(event.xdata, event.ydata)
+        print()
+        self.currentpoly.append((event.xdata, event.ydata))
+
+        if len(self.currentpoly) > 1:
+            self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[-2])
+
+        if len(self.currentpoly) == 4:
+            # we assume is a 4 points and segments
+            # draw the last segment
+            self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[1])
+            # disconnect event handler
+            self.fig.canvas.mpl_disconnect(self.cid)
+            # reset currentpoly
+            self.currentpoly = []
+
+    def draw_poly_segment(self, pt1, pt2):
+        self.ax.plot(pt1[0], pt2[0], pt1[1], pt2[1], linestyle='--')
+        self.canvas.draw()
+
