@@ -10,12 +10,12 @@ from gi.repository import Gtk, Gdk
 
 #from scipy import misc
 
-import matplotlib
-matplotlib.use('GTK3Agg')
+import matplotlib as mpl
+mpl.use('GTK3Agg')
 import matplotlib.pyplot as plt
 
-#from PIL.Image import open as imload
-from matplotlib.image import imread as imload
+from PIL.Image import open as imload
+#from matplotlib.image import imread as imload
 
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as GtkFigureCanvas
 #from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as GtkFigureCanvas
@@ -27,8 +27,9 @@ from matplotlib.patches import Polygon
 
 UI_FILE = __name__ + ".ui"
 
-default_image_path = 'Images/PSPyoda.gif'
+#default_image_path = 'Images/PSPyoda.gif'
 #default_image_path = '/home/nemosyne/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/PauliRGB.bmp'
+default_image_path = '/home/cpenar/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/PauliRGB.bmp'
 
 
 class GUI:
@@ -66,16 +67,28 @@ class GUI:
         # Setting Gtk image
         
         self.GtkSw = self.builder.get_object('scrolledwindow_image')
-        width, height, _ = self.image.shape
+        width, height = self.image.size
+
+        params = mpl.figure.SubplotParams(left=0, bottom=0, right=1, top=1, wspace=0.1, hspace=0.1)
     
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(subplotpars=params)
+
+        ax.set_axis_off()
+        #ax.xaxis.set_visible(False)
+        #ax.yaxis.set_visible(False)
         ax.imshow(self.image, origin='lower')
-        #ax.get_xaxis().set_visible(False)
-        #ax.get_yaxis().set_visible(False)
-        #ax.set_axis_off()
-        #ax.set_frame_on(False)
-        #ax.set_xticks([]); ax.set_yticks([])
-        #plt.axis('off')
+
+        # Trying to add a polygon with alpha
+
+        polycoords = [(360, 1610),
+                (425, 1226),
+                (724, 944),
+                (1124, 1409)
+                ]
+
+        polygon = Polygon(polycoords, True, alpha=0.4)
+
+        ax.add_patch(polygon)
 
         canvas = GtkFigureCanvas(fig)
         self.GtkSw.add_with_viewport(canvas)
@@ -98,16 +111,12 @@ class GUI:
         self.window.show_all()
         self.window.move(max_width + 200, 130)
 
-        # testing polygon
+        from gi.repository import GLib
+        def del_poly():
+            polygon.remove()
 
-        absices = np.random.random_integers(width, size=(5,))
-        ordonnees = np.random.random_integers(height, size=(5,))
-        points = np.stack((absices, ordonnees), axis=-1)
+        GLib.timeout_add(1000, del_poly)
 
-        Polygon(points)
-
-        
-        
 
     def on_rect_selection_button_clicked(self, widget, *args):
         pass
