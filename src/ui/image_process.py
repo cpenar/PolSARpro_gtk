@@ -64,7 +64,7 @@ class GUI:
                 self.image_file_path = \
                     default_image_path
                    #self.config['localDir'] + '/' + default_image_path
-            self.image = imload(self.image_file_path)
+            self.image = imload(self.image_file_path)[::-1]
         
         max_width = Gdk.Screen.width() / 2 - 100
         max_height = Gdk.Screen.height() - 250
@@ -74,7 +74,6 @@ class GUI:
         # Setting Gtk image
         
         self.GtkSw = self.builder.get_object('scrolledwindow_image')
-        print(self.image, type(self.image))
         width, height, _ = self.image.shape
 
         params = mpl.figure.SubplotParams(left=0, bottom=0, right=1, top=1, wspace=0.1, hspace=0.1)
@@ -178,10 +177,10 @@ class GUI:
         result = np.zeros_like(self.image)
         imgarray = np.array(self.image)
         print(self.image.shape[0:2], type(self.image.shape[0:2]))
-        img = Image.new('L', self.image.shape[:2], False)
+        img = Image.new('L', self.image.shape[:2][::-1], False)
         for poly in self.polycollection:
             ImageDraw.Draw(img).polygon(poly, outline=1, fill=True)
-        mask = np.array(img)
+        mask = np.array(img)[::-1]
         for index, istrue in np.ndenumerate(mask):
             if istrue:
                 result[index] = imgarray[index]
