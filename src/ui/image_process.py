@@ -8,12 +8,15 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 
+import numpy as np
+
 import matplotlib as mpl
 mpl.use('GTK3Cairo')
 import matplotlib.pyplot as plt
 
-from PIL.Image import open as imload
-#from matplotlib.image import imread as imload
+from PIL import Image, ImageDraw
+#from PIL.Image import open as imload
+from matplotlib.image import imread as imload
 
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as GtkFigureCanvas
 #from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as GtkFigureCanvas
@@ -31,7 +34,7 @@ default_image_path = '/home/cpenar/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_A
 
 
 class GUI:
-    def __init__(self, state, image_file_path=None):
+    def __init__(self, state, image_file_path=None, image=None):
         # global app state
         self.globState = state
         # local config
@@ -45,6 +48,7 @@ class GUI:
         self.window.show_all()
 
         self.image_file_path = image_file_path
+        self.image = image
         self.init_image()
 
         self.polycollection = []
@@ -55,12 +59,12 @@ class GUI:
     def init_image(self):
 
         imBox = self.builder.get_object('dialog-vbox1')
-        if self.image_file_path is None:
-            self.image_file_path = \
-                default_image_path
-                #self.config['localDir'] + '/' + default_image_path
-
-        self.image = imload(self.image_file_path)
+        if self.image is None:
+            if self.image_file_path is None:
+                self.image_file_path = \
+                    default_image_path
+                   #self.config['localDir'] + '/' + default_image_path
+            self.image = imload(self.image_file_path)
         
         max_width = Gdk.Screen.width() / 2 - 100
         max_height = Gdk.Screen.height() - 250
@@ -70,7 +74,8 @@ class GUI:
         # Setting Gtk image
         
         self.GtkSw = self.builder.get_object('scrolledwindow_image')
-        width, height = self.image.size
+        print(self.image, type(self.image))
+        width, height, _ = self.image.shape
 
         params = mpl.figure.SubplotParams(left=0, bottom=0, right=1, top=1, wspace=0.1, hspace=0.1)
     
@@ -114,8 +119,6 @@ class GUI:
         if event.button!=1: return
         if (event.xdata is None): return
 
-        print(event.xdata, event.ydata)
-        print()
         self.currentpoly.append((event.xdata, event.ydata))
 
         if len(self.currentpoly) > 1:
@@ -167,4 +170,21 @@ class GUI:
         # refresh canvas
         self.canvas.draw()
 
+    def on_extract_selection_clicked(self, widget, *args):
+        if not self.polycollection: 
+            print('Create selection polygons first')
+            return
+
+        result = np.zeros_like(self.image)
+        imgarray = np.array(self.image)
+        print(self.image.shape[0:2], type(self.image.shape[0:2]))
+        img = Image.new('L', self.image.shape[:2], False)
+        for poly in self.polycollection:
+            ImageDraw.Draw(img).polygon(poly, outline=1, fill=True)
+        mask = np.array(img)
+        for index, istrue in np.ndenumerate(mask):
+            if istrue:
+                result[index] = imgarray[index]
+
+        GUI(self.globState, image=result)
 

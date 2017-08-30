@@ -296,7 +296,7 @@ class GUI:
     def open_output_bmp_file(self):
         def open_image_process_gui():
             import image_process
-            image_process.GUI(self.globState, self.config['output_bmp_file'])
+            image_process.GUI(self.globState, image_file_path=self.config['output_bmp_file'])
             return False
 
         GLib.idle_add(open_image_process_gui)
