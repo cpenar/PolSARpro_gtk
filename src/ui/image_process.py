@@ -77,21 +77,7 @@ class GUI:
         self.fig, self.ax = plt.subplots(subplotpars=params)
 
         self.ax.set_axis_off()
-        #ax.xaxis.set_visible(False)
-        #ax.yaxis.set_visible(False)
         self.ax.imshow(self.image)
-
-        # Trying to add a polygon with alpha
-
-        polycoords = [(360, 1610),
-                (425, 1226),
-                (724, 944),
-                (1124, 1409)
-                ]
-
-        polygon = Polygon(polycoords, True, alpha=0.4)
-
-        self.ax.add_patch(polygon)
 
         self.canvas = GtkFigureCanvas(self.fig)
         self.GtkSw.add_with_viewport(self.canvas)
@@ -114,15 +100,6 @@ class GUI:
         self.window.show_all()
         self.window.move(max_width + 200, 130)
 
-        # removing polygon after a timeout
-        from gi.repository import GLib
-        def del_poly():
-            polygon.remove()
-            self.canvas.draw()
-
-        GLib.timeout_add(1000, del_poly)
-
-
     def on_polygon_selection_button_clicked(self, widget, *args):
         self.cid = self.fig.canvas.mpl_connect(
             'button_press_event', 
@@ -140,15 +117,15 @@ class GUI:
             self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[-2])
 
         if len(self.currentpoly) == 4:
-            # we assume is a 4 points and segments
+            # we assume polygon is 4 points and segments
             # draw the last segment
-            self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[1])
+            self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[0])
             # disconnect event handler
             self.fig.canvas.mpl_disconnect(self.cid)
             # reset currentpoly
             self.currentpoly = []
 
     def draw_poly_segment(self, pt1, pt2):
-        self.ax.plot(pt1[0], pt2[0], pt1[1], pt2[1], linestyle='--')
+        self.ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], linestyle='-', color='k')
         self.canvas.draw()
 
