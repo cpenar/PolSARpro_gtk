@@ -8,10 +8,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 
-#from scipy import misc
-
 import matplotlib as mpl
-mpl.use('GTK3Agg')
+mpl.use('GTK3Cairo')
 import matplotlib.pyplot as plt
 
 from PIL.Image import open as imload
@@ -51,6 +49,8 @@ class GUI:
 
         self.polycollection = []
         self.currentpoly = []
+        self.connect_ids = []
+        self.temp_segments = []
 
     def init_image(self):
 
@@ -101,9 +101,14 @@ class GUI:
         self.window.move(max_width + 200, 130)
 
     def on_polygon_selection_button_clicked(self, widget, *args):
-        self.cid = self.fig.canvas.mpl_connect(
+        self.connect_ids.append(self.fig.canvas.mpl_connect(
             'button_press_event', 
-            self.next_poly_coord)
+            self.next_poly_coord))
+
+        self.connect_ids.append(self.fig.canvas.mpl_connect(
+            'motion_notify_event',
+            self.draw_temp_segment
+            ))
 
     def next_poly_coord(self, event):
         if event.button!=1: return
@@ -118,14 +123,48 @@ class GUI:
 
         if len(self.currentpoly) == 4:
             # we assume polygon is 4 points and segments
+            self.polycollection.append(self.currentpoly)
             # draw the last segment
             self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[0])
-            # disconnect event handler
-            self.fig.canvas.mpl_disconnect(self.cid)
+            # disconnect event handlers
+            while self.connect_ids:
+                self.fig.canvas.mpl_disconnect(self.connect_ids.pop())
             # reset currentpoly
             self.currentpoly = []
+        # refresh canvas
+        self.canvas.draw()
 
     def draw_poly_segment(self, pt1, pt2):
-        self.ax.plot([pt1[0], pt2[0]], [pt1[1], pt2[1]], linestyle='-', color='k')
+        return self.ax.plot(
+                [pt1[0], pt2[0]],
+                [pt1[1], pt2[1]],
+                linestyle='-',
+                color='k')
+
+    def draw_temp_segment(self, event):
+        if not event.inaxes: return
+        # if first point nothing to do
+        if not self.currentpoly: return
+
+        # remove previous temp_segments
+        while self.temp_segments:
+            #self.temp_segments.pop().remove()
+            lines = self.temp_segments.pop()
+            while lines:
+                self.ax.lines.remove(lines.pop())
+
+        x, y = event.xdata, event.ydata
+        self.temp_segments.append(
+                self.draw_poly_segment(self.currentpoly[-1], (x, y))
+                )
+
+        # is it the last points ?
+        if len(self.currentpoly) == 3:
+            self.temp_segments.append(
+                    self.draw_poly_segment(self.currentpoly[0], (x,y))
+                    )
+
+        # refresh canvas
         self.canvas.draw()
+
 
