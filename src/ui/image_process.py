@@ -31,6 +31,7 @@ UI_FILE = __name__ + ".ui"
 #default_image_path = 'Images/PSPyoda.gif'
 #default_image_path = '/home/nemosyne/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/PauliRGB.bmp'
 default_image_path = '/home/cpenar/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/PauliRGB.bmp'
+test_mask_image_path = '/home/cpenar/work/PolSARpro/doc_n_data_set/SAN_FRANCISCO_ALOS/T3/mask_valid_pixels.bmp'
 
 
 class GUI:
@@ -49,12 +50,14 @@ class GUI:
 
         self.image_file_path = image_file_path
         self.image = image
-        self.init_image()
 
         self.polycollection = []
         self.currentpoly = []
         self.connect_ids = []
         self.temp_segments = []
+        self.synchronized_axes = []
+
+        self.init_image()
 
     def init_image(self):
 
@@ -74,15 +77,30 @@ class GUI:
         # Setting Gtk image
         
         self.GtkSw = self.builder.get_object('scrolledwindow_image')
-        width, height, _ = self.image.shape
+        width, height = self.image.shape[:2]
 
-        params = mpl.figure.SubplotParams(left=0, bottom=0, right=1, top=1, wspace=0.1, hspace=0.1)
+        self.axparams = mpl.figure.SubplotParams(
+                left=0.03, bottom=0.03, right=0.97, top=0.97, 
+                wspace=0.1, hspace=0.1)
     
-        self.fig, self.ax = plt.subplots(subplotpars=params)
+        #self.fig, self.ax = plt.subplots(subplotpars=self.axparams)
+        self.fig = plt.figure(subplotpars=self.axparams)
+        self.ax = self.fig.add_subplot(121)
+        self.synchronized_axes.append(self.ax)
 
         self.ax.set_axis_off()
         self.ax.imshow(self.image)
 
+        # setting mask_valid_pixels
+
+        self.mask_image = imload(test_mask_image_path)[::-1]
+
+        self.axmask = self.fig.add_subplot(122)
+        self.axmask.set_axis_off()
+        self.axmask.imshow(self.mask_image)
+
+        self.synchronized_axes.append(self.axmask)
+        # mpl canvas for Gtk
         self.canvas = GtkFigureCanvas(self.fig)
         self.GtkSw.add_with_viewport(self.canvas)
 
@@ -93,6 +111,11 @@ class GUI:
             self.window.resize(width, height)
             
 
+        # Notify Statusbar when mouse move
+        self.fig.canvas.mpl_connect(
+            'motion_notify_event',
+            self.image_value_to_statusbar
+            )
         # MplNavBar
 
         toolbar = MplNavBar(self.canvas, self.window)
@@ -103,6 +126,16 @@ class GUI:
         
         self.window.show_all()
         self.window.move(max_width + 200, 130)
+
+    def image_value_to_statusbar(self, event):
+        if (event.xdata is None): return
+        x, y = int(event.ydata), int(event.xdata)
+
+        statusbar = self.builder.get_object('statusbar1')
+        statusbar.push(1, ' x=' + str(x) + '     y=' + str(y)
+                + '     image_value=' + str(self.image[x,y])
+                + '     mask_value=' + str(self.mask_image[x,y]))
+
 
     def on_polygon_selection_button_clicked(self, widget, *args):
         self.connect_ids.append(self.fig.canvas.mpl_connect(
@@ -182,15 +215,18 @@ class GUI:
             json.dump(self.polycollection, fp)
 
         # open polygons in new window
+
         result = np.zeros_like(self.image)
         imgarray = np.array(self.image)
-        img = Image.new('L', self.image.shape[:2][::-1], False)
+        imgmask = Image.new('L', self.image.shape[:2][::-1], False)
         for poly in self.polycollection:
-            ImageDraw.Draw(img).polygon(poly, outline=1, fill=True)
-        mask = np.array(img)[::-1]
+            ImageDraw.Draw(imgmask).polygon(poly, outline=1, fill=True)
+        mask = np.array(imgmask)[::-1]
+        
         for index, istrue in np.ndenumerate(mask):
-            if istrue:
-                result[index] = imgarray[index]
+            if istrue: result[index] = imgarray[index]
 
         GUI(self.globState, image=result)
 
+    def on_open_new_clicked(self, widget, *args):
+        pass

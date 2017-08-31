@@ -43,13 +43,14 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkToolButton" id="toolbutton1">
+                      <object class="GtkToolButton" id="open_new">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Open Image</property>
+                        <property name="tooltip_text" translatable="yes">Open new image</property>
                         <property name="label" translatable="yes">toolbutton</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">folder-open</property>
+                        <signal name="clicked" handler="on_open_new_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -60,7 +61,7 @@
                       <object class="GtkToolButton" id="poly_selection_button">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Multi Rectangle selection</property>
+                        <property name="tooltip_text" translatable="yes">Polygon selection</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">document-page-setup</property>
                         <signal name="clicked" handler="on_polygon_selection_button_clicked" swapped="no"/>
@@ -74,6 +75,7 @@
                       <object class="GtkToolButton" id="extract_selection">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Extract polygon selection</property>
                         <property name="label" translatable="yes">toolbutton2</property>
                         <property name="use_underline">True</property>
                         <property name="icon_name">document-revert</property>
@@ -102,6 +104,23 @@
               </packing>
             </child>
             <child>
+              <object class="GtkStatusbar" id="statusbar1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">2</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkScrolledWindow" id="scrolledwindow_image">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -118,7 +137,7 @@
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="padding">1</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
