@@ -170,13 +170,20 @@ class GUI:
         self.canvas.draw()
 
     def on_extract_selection_clicked(self, widget, *args):
+        import json
         if not self.polycollection: 
             print('Create selection polygons first')
             return
 
+        # save self.polycollection
+        print('saving polygon selection in ' + self.config['tempDir'])
+        print('as training.json')
+        with open(self.config['tempDir'] + '/training.json', 'w') as fp:
+                json.dump(self.polycollection, fp)
+
+        # open polygons in new window
         result = np.zeros_like(self.image)
         imgarray = np.array(self.image)
-        print(self.image.shape[0:2], type(self.image.shape[0:2]))
         img = Image.new('L', self.image.shape[:2][::-1], False)
         for poly in self.polycollection:
             ImageDraw.Draw(img).polygon(poly, outline=1, fill=True)
