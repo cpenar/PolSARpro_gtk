@@ -115,7 +115,7 @@ class GUI:
             ))
 
     def next_poly_coord(self, event):
-        if event.button!=1: return
+        if not event.button in (1, 3): return
         if (event.xdata is None): return
 
         self.currentpoly.append((event.xdata, event.ydata))
@@ -123,8 +123,8 @@ class GUI:
         if len(self.currentpoly) > 1:
             self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[-2])
 
-        if len(self.currentpoly) == 4:
-            # we assume polygon is 4 points and segments
+        if event.button == 3:
+            # last segment
             self.polycollection.append(self.currentpoly)
             # draw the last segment
             self.draw_poly_segment(self.currentpoly[-1], self.currentpoly[0])
@@ -136,12 +136,12 @@ class GUI:
         # refresh canvas
         self.canvas.draw()
 
-    def draw_poly_segment(self, pt1, pt2):
+    def draw_poly_segment(self, pt1, pt2, color='k'):
         return self.ax.plot(
                 [pt1[0], pt2[0]],
                 [pt1[1], pt2[1]],
                 linestyle='-',
-                color='k')
+                color=color)
 
     def draw_temp_segment(self, event):
         if not event.inaxes: return
@@ -160,10 +160,10 @@ class GUI:
                 self.draw_poly_segment(self.currentpoly[-1], (x, y))
                 )
 
-        # is it the last points ?
-        if len(self.currentpoly) == 3:
+        # can we draw a temp closing segment ?
+        if len(self.currentpoly) > 1:
             self.temp_segments.append(
-                    self.draw_poly_segment(self.currentpoly[0], (x,y))
+                    self.draw_poly_segment(self.currentpoly[0], (x,y), color='w')
                     )
 
         # refresh canvas
@@ -176,10 +176,10 @@ class GUI:
             return
 
         # save self.polycollection
-        print('saving polygon selection in ' + self.config['tempDir'])
-        print('as training.json')
+        print('saving polygon selection in ' + 
+            self.config['tempDir'] + '/training.json')
         with open(self.config['tempDir'] + '/training.json', 'w') as fp:
-                json.dump(self.polycollection, fp)
+            json.dump(self.polycollection, fp)
 
         # open polygons in new window
         result = np.zeros_like(self.image)
